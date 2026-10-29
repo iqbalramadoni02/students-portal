@@ -11,8 +11,12 @@
 <meta name="apple-mobile-web-app-title" content="Beranda Siswa">
 <meta name="robots" content="noindex, nofollow">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="icon-192.png">
-<link rel="icon" href="icon-192.png">
+<!-- Lambang tab ditanam sebagai data URI, bukan dirujuk sebagai berkas:
+     tabnya langsung bertanda walau ikonnya belum ikut ter-upload, dan
+     tidak ada satu pun permintaan ke luar. -->
+<link rel="icon" type="image/png" sizes="128x128" href="data:image/png;base64,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">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<link rel="shortcut icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAJIUlEQVR42u2dXYhcZxnH/8/znnPmY7MbiZfN9uNO1larhTTixRqoIpom1nYvRCQgQYxR6GV7NexVwSK9kG2krRcBS8GhJqGpRuJHFxS6xYglEil4kdStBQ2tu92dj3PO+z5enJnJaqq7s3PO7Dlznv9yILAzs5P3+T0f7zfhw9RoMBYXXfLvee+u9QMPibXHxMlhEbmHgP0ACKo8SQRYI6LrRHidiF+50Vm9jOeuRLfZdItuN+LCgkGzadEA3/ne8W8KyWkC7idmiHMQJ8mfUuVPRCAmkGGIdQDwJsDPvv2u/2M0m3Zg2/8JQGPew+JyfMephz/BPv2Ife8zEltIZAUkDkIEAqn35zcKQCAgEQgx+YbIM5DIrsRx9O2/P/vzP/VtfDsAvV/Mnv7yMfK8nxDTtOvGMSAMIta2LWRScAA5DjxPnGw6G39jdenVc1shoK1hf/bU0Ycp4PNwwmKdBZHRVpwIECwZNmAWF9qvrp65eL5vc+oXB3d+79gcCG9ApC7WiXr95EUDMkwg6jhLD64uXbiKRoO5H/6duLMwPCXWOTX+RBaILNY5MNcI9uwD33rABwCD5WU5eO99J0w1OCWdKAaRp601uRDAupjrwR2bUvvb2tPPX6G5xkKwfrP1R/a8OYliDf1lSAW+RxLHb1XY3s/rN8MjbMzHJbJQ45ckFUQWZMzHQuGHmBE/QoYBEqetUxYIxJFhEeFHWECHxTpASAd3SpMGiMQ6EuCwJ8DdcILeCJ+qFBEALE5AhLs8AmZ6Y/sKQLmKQQDYx2r4ckurfgVApQCoFACVAqBSAFQKgEoBUJVHOvc/orIeRRMFIN+yGU+icsYz9ArAiN5fD6ogotQ9lQCICLpRBMkwDigAuzSOFYd6pYqTnzuOWlCFE5daOpCe53eiLl747QVsdtowzJlgoACMiEI9qKJeqcEOAJCRP1MAGGLwYB+OpoBc1wD9hwEQ7d5kgmQvhxtTfaEApJQO+o8A6IRdiMjQEEgPnorvY5z77xSAlLK2IUKr28ULr11AO+yAaec5mwA4caj6FZw8chxTlVqmhZ8CkCEIrbCDVrcNMyQAVhycyNgMrwBkJEM8eIYBoP/ecUsBSD0G/Ocz7PvGLZ0LKLnGEgGoQN6rAKQsJ1KgpiVwyfbHeFl7fi2oFCoChFFYqkjgZWV4Kw61oIqvf/aLqAXVLUOl+RQToROFePH3l4buxikA20SAekEAGGUYVwH4PzVAf6w8z40roF69ogBkEgnyfrZcWffH6ThAyaUAlFyZpwCmpG8tOT+AoP89FYCU1YnC5HCqgnQDRQFIo6JO1rR1oxAv/u4SiuJYIkA3Coeay1cAtgGhFbaLVRSV7KC0zFOAKViDagrQBtVuoEojgGoEUW9eYcevx96d0qcAZKDIxnAYclEoklXBCsAEeP+BqRl4bIYCIHYOsbMKQJENHzuLmUodP338KRzYNwMnsu0YiEgyCLXW2sBjzzyB2FoQje9eLgUgAxA+um8/ZupTwxmCzVB1gwKQ8xpARJItYtsYtf+ayMaTWQQS6NbGuVy7bvId09iZs7UXsBOvHrbXUCgA9qKwGUWGdSg41Xw4U6snJ2jkPAL0C69W2IGUaGlYRquCk4p4ulbHU1/7LqardSTXEOZzWlAgMGSw0W3hyZeWsNbagGe8UoCQ8argJALM1KYQO5vbJSECgccGzJRbSAtdA8TWJgDkOAJAilevFKYXQIM19/n1rrx/v6yks4El1xjWA9z6yauK8B0LC4BhA4/NIB3kuQg0bBSAtBt2s9MGgxBLznsBZLDZbZdqDCAzAAQCw4x22MUTLy0ValXwZrcDw6Y0IGQbAUSw1tpAkQ6I0KHgtP+AKVZe1RSgDZrK/7n/7LR99qqddD1AJlHP2/EUb/81nvEUgEnx/rXWB8mG2CEWhKy3N/YkCigAKRreY4P1bgtf+v7jydiHYPuTJ3qvsc6iG8fwjBnr1LkCkAEIN9f/BTPELSLJoVqC6dqURoBJkO95Q58VzGO4G0ABGGcvYMiZhb3qBehsYMmlAJS9yzqecFgMEaBLwtJWxfdRpPPCwzhWANKQE0HVD/D5ew+h4vu5P4WTiBDGMS5fXUEnCktzYljmESDwfVT9oBAA6FnBGdUArvfkPf+XceJKewHaDVQpACodByh7cbWXW7QnGoAwjsBEBekGRgpAarml16CXr75RqEujoh6wCkBK6kRhsYoiHQrWBtVegEoBUGkKUO22R4Hh5j/38kY1BSBl9e9J7PcqdgqAFbcnXWUFIGXV/AAibuhFoclVu8HYI4ECkFLQt+JQCQKcPHJ81wdNEAjVIIDtAaQAFETSexiEqUp1hIzemzrH+PZTKwCjdqOIBt5KA9+XkT6PkHzmOMZQFIAR1c7gXkRBctlWO8z+HkOaPX1U73XadeZPcnZWc50CQScMMz28SiPAiAba7LazS9iU/T2GCsCIMsSZjuJkHZ4VgJwbKPMiVk1Y8l6MNoECoFIAVAqASgFQKQAqBUBVNgB0LqDMAAiw3jvPXUEokxKbbzIBN4gJpbwvpawSOGKCEK4zEV4nwwCJAlAa7xchw0KCFXZE58Q6QEgLwvJEABYrRKBzPHOg+htn3V/IN4Ds0XmlqvGGf9+DWPsWbaz/iq8tNkMQ/YA8QwApAJMvR74hEJ65cXa5Q2g0GHiND/5z3wpX/E9LN7IgMtpOk+j9YinwjUTxm9P/qB26NjcXJ3l/cTmGF5yAkxYZZk0FE2l8B2YS5zqO5MS1ZjME+ouZFhYMmk178NTRr3BgfgbnSJL73jUSTIrnMxt4DBvZx95Zuvhy3+ZJBGg2LRrz3uqZi+ddHD8Kok0OfANBrNGg4F4viDnwDQy3EMYL7yxdfBmNeQ/NpgWAWx6+fMOhMe+tP3352kcO3fMLIf4UV/xZEBGsExAchFDKK7YLVuWDxEFA5HtsKj6LdX9AFD/69plXf43GvIfF5cGByLcbsxcaMD/vzX5y/0kCvgPgPmKGOAdxAuiYUT5FBGJC31YQ/NmRO7Paefd5PHclGth261s+9IMaDcbiogOAucZCsPF+9AWBPQbBYYjcDcG0tnYeAcAHILoOohUQXqm48Jd//eGl7n/bdKv+DaYx+0rkTx3pAAAAAElFTkSuQmCC">
 <style>
 /* =====================================================================
    HURUF — ditanam langsung, tidak memanggil fonts.googleapis.com.
@@ -173,6 +177,8 @@ h2.bagian {
 label.pilih { display: flex; align-items: center; gap: 9px; font-weight: 400; font-size: 14.5px; color: var(--tinta); margin: 0; padding: 7px 8px; border-radius: 6px; cursor: pointer; }
 label.pilih:hover { background: var(--jade-muda); }
 label.pilih input { width: 19px; height: 19px; accent-color: var(--jade); flex: none; }
+#umpan { font: 400 12.5px/1.4 'Archivo', monospace; letter-spacing: 0; word-break: break-all; }
+a.tombol { text-decoration: none; }
 .kabar-ok { background: var(--jade-muda); color: var(--jade-tua); border-radius: var(--r); padding: 13px 15px; font-size: 14.5px; font-weight: 600; margin-bottom: 18px; }
 
 /* --- absensi ----------------------------------------------------- */
@@ -595,6 +601,68 @@ function kirimTugas(id) {
   });
 }
 
+/* ---------------------------------------------------------------
+ * GOOGLE CALENDAR
+ * Dua jalan, dan keduanya perlu:
+ *  - berlangganan sekali: setiap agenda BARU dari Ustadz muncul sendiri
+ *    di kalender anak, selamanya, tanpa menunggu email;
+ *  - tambah satu-satu: untuk yang ingin agendanya masuk SEKARANG juga,
+ *    karena Google menyegarkan kalender langganan beberapa jam sekali.
+ * ------------------------------------------------------------- */
+function umpanKalender() {
+  return API + (API.indexOf('?') >= 0 ? '&' : '?')
+    + 'action=icsSiswa&nomor=' + encodeURIComponent(ST.nomor || '');
+}
+
+function tautanLangganan() {
+  return 'https://calendar.google.com/calendar/r?cid=' + encodeURIComponent(umpanKalender());
+}
+
+function capKal(tgl, jam, bawaan) {
+  var t = String(tgl || '').replace(/-/g, '');
+  var j = String(jam || '').replace(/[^0-9]/g, '').slice(0, 4);
+  return t + 'T' + (j.length === 4 ? j : bawaan) + '00';
+}
+
+/** Tautan "tambahkan satu acara" bawaan Google — langsung terbuka berisi. */
+function tautanSatuAcara(x) {
+  var mulai = capKal(x.tanggal, x.jam, '0700');
+  var akhir = capKal(x.tanggal, x.sampai || '', '0840');
+  if (!(akhir > mulai)) akhir = capKal(x.tanggal, x.jam, '0840');
+  var q = 'action=TEMPLATE'
+    + '&text=' + encodeURIComponent((x.jenis ? x.jenis + ': ' : '') + (x.judul || ''))
+    + '&dates=' + mulai + '/' + akhir
+    + '&details=' + encodeURIComponent(String(x.isi || '') + (x.mapel ? '\n' + x.mapel : ''))
+    + '&location=' + encodeURIComponent(x.kelas || '')
+    + '&ctz=Asia/Jakarta';
+  return 'https://calendar.google.com/calendar/render?' + q;
+}
+
+function kartuKalender(d) {
+  var punyaEmail = !!String(d.email || '').trim();
+  if (!punyaEmail) {
+    return '<div class="akun"><p>Sematkan emailmu di bawah, lalu kartu '
+      + '<b>Google Calendar</b> muncul di sini — sekali daftar, seluruh agenda '
+      + 'dari gurumu masuk sendiri ke kalendermu.</p></div>';
+  }
+  return '<div class="akun">'
+    + '<p>Emailmu sudah tersematkan: <b>' + esc(d.email) + '</b>. '
+    + 'Daftarkan agendamu sekali, lalu <b>setiap ulangan, ujian, dan batas tugas '
+    + 'yang baru dibuat gurumu masuk sendiri</b> ke Google Calendar — tidak perlu '
+    + 'menambahkan satu per satu lagi.</p>'
+    + '<a class="tombol" id="btn-kal" target="_blank" rel="noopener" href="'
+    + esc(tautanLangganan()) + '">Hubungkan ke Google Calendar</a>'
+    + '<p class="k" style="margin-top:11px">Di layar yang terbuka, tekan '
+    + '<b>Tambahkan</b>. Google menyegarkan kalender langganan beberapa jam '
+    + 'sekali, jadi agenda yang baru saja dibuat gurumu bisa belum langsung '
+    + 'terlihat — untuk yang mendesak, pakai tombol <b>Tambah ke Calendar</b> '
+    + 'pada pengumumannya.</p>'
+    + '<label for="umpan" style="margin-top:13px">Alamat agendamu (untuk kalender selain Google)</label>'
+    + '<input type="text" id="umpan" readonly value="' + esc(umpanKalender()) + '">'
+    + '<button class="tombol sunyi" id="btn-salin" style="margin-top:9px">Salin alamat</button>'
+    + '<div id="kal-pesan"></div></div>';
+}
+
 function pesanAtas(teks) {
   var k = el('kabar');
   if (!k) return;
@@ -668,6 +736,10 @@ function layarIsi() {
         + '<div class="t">' + tgl(x.tanggal) + (x.jam ? ' · ' + esc(x.jam) : '')
         + ' &nbsp;·&nbsp; ' + esc(x.mapel || x.kelas || '') + '</div>'
         + (x.isi ? '<div class="i">' + esc(x.isi) + '</div>' : '')
+        + (x.tanggal
+          ? '<a class="tombol sunyi" style="margin-top:11px" target="_blank" rel="noopener" '
+            + 'href="' + esc(tautanSatuAcara(x)) + '">Tambah ke Calendar</a>'
+          : '')
         + '</div>';
     }).join('');
   }
@@ -679,6 +751,8 @@ function layarIsi() {
   }
 
   /* 6. email, supaya pemberitahuan sampai ke HP sendiri */
+  s += '<h2 class="bagian">Google Calendar</h2>' + kartuKalender(d);
+
   s += '<h2 class="bagian">Emailku</h2><div class="akun">'
     + '<p>Sematkan emailmu supaya pemberitahuan tugas, ulangan, dan ujian dari gurumu '
     + 'langsung masuk ke email dan Google Calendar-mu.</p>'
@@ -703,6 +777,22 @@ function layarIsi() {
   [].slice.call(document.querySelectorAll('[data-kirim]')).forEach(function (b) {
     b.addEventListener('click', function () { kirimTugas(b.getAttribute('data-kirim')); });
   });
+  var salin = el('btn-salin');
+  if (salin) {
+    salin.addEventListener('click', function () {
+      var i = el('umpan'), p = el('kal-pesan');
+      try {
+        i.select(); i.setSelectionRange(0, 99999);
+        var ok = document.execCommand && document.execCommand('copy');
+        if (!ok && navigator.clipboard) navigator.clipboard.writeText(i.value);
+        p.innerHTML = '<div class="kabar-ok" style="margin:11px 0 0">Alamat tersalin. '
+          + 'Tempelkan di aplikasi kalendermu, pada menu "berlangganan kalender dari URL".</div>';
+      } catch (e) {
+        p.innerHTML = '<div class="galat"><b>Belum tersalin</b>'
+          + 'Tekan lama pada alamat di atas, lalu pilih Salin.</div>';
+      }
+    });
+  }
   var fokus = ST.buka && el('tautan-' + ST.buka);
   if (fokus) fokus.focus();
 }
