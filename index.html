@@ -87,8 +87,11 @@ body {
 .bungkus { max-width: 560px; margin: 0 auto; padding: 22px 0 56px; }
 
 /* --- pita atas --------------------------------------------------- */
-.pita { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; }
-.pita svg { width: 26px; height: 26px; flex: none; }
+.pita { display: flex; align-items: center; gap: 11px; margin-bottom: 22px; }
+/* Lambang asli sekolah, ditanam sebagai data URI supaya halaman ini tetap
+   tidak memanggil apa pun dari luar — tetap tampil walau ikonnya belum
+   ikut ter-upload ke hosting. */
+.pita img { width: 34px; height: 34px; flex: none; border-radius: 8px; display: block; }
 .pita b { font-size: 15px; font-weight: 600; letter-spacing: -.01em; }
 .pita span { color: var(--tinta-3); font-size: 13px; }
 
@@ -209,11 +212,7 @@ table.absen td:last-child { text-align: right; font-weight: 600; }
 <body>
 <div class="bungkus">
   <div class="pita">
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <rect x="3" y="4" width="18" height="16" rx="2.5" stroke="#1D6B4C" stroke-width="1.8"/>
-      <path d="M7 9h7M7 12.5h7M7 16h4" stroke="#1D6B4C" stroke-width="1.6" stroke-linecap="round"/>
-      <rect x="16" y="8" width="2.6" height="8.6" rx="1" fill="#1D6B4C"/>
-    </svg>
+    <img src="data:image/png;base64,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" alt="" width="128" height="128">
     <div><b>Beranda Siswa</b><br><span>SMAIT Al-Ittihad Pekanbaru</span></div>
   </div>
   <div id="layar"></div>
