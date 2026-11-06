@@ -241,6 +241,36 @@ table.absen td:last-child { text-align: right; font-weight: 600; }
 .umum .i { font-size: 14px; margin-top: 7px; color: var(--tinta-2); }
 
 /* --- akun -------------------------------------------------------- */
+/* --- materi & bahan belajar yang ditempel gurunya di pertemuan --- */
+.tombol-baris { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 11px; }
+.tombol-baris .tombol { margin: 0; }
+.bahan-teks { background: var(--kertas); border-radius: 8px; padding: 10px 12px; font-size: 13.5px; color: var(--tinta-2); margin-top: 11px; }
+.materi { background: var(--papan); border: 1px solid var(--garis); border-left: 3px solid var(--jade); border-radius: var(--r); padding: 14px 16px; margin-bottom: 9px; }
+.materi .atas { display: flex; align-items: baseline; gap: 10px; }
+.materi .j { font-weight: 600; font-size: 15px; flex: 1; letter-spacing: -.005em; min-width: 0; }
+.materi .t { color: var(--tinta-3); font-size: 13px; margin-top: 3px; }
+.materi dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin: 11px 0 0; font-size: 13.5px; }
+.materi dt { color: var(--tinta-3); }
+.materi dd { margin: 0; color: var(--tinta-2); white-space: pre-wrap; }
+.bahan-daftar { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+.bahan-daftar a {
+  display: flex; align-items: center; gap: 9px; background: var(--kertas);
+  border: 1px solid var(--garis-tipis); border-radius: var(--r-kecil);
+  padding: 10px 12px; font-size: 13.5px; font-weight: 600;
+  color: var(--jade-tua); text-decoration: none; word-break: break-word;
+}
+.bahan-daftar a:hover { border-color: var(--jade); }
+.bahan-daftar a i { font-style: normal; flex: none; }
+/* --- ujian CBT --- */
+.ujian { background: var(--papan); border: 1px solid var(--garis); border-radius: var(--r); padding: 14px 16px; margin-bottom: 9px; }
+.ujian.berlangsung { border-left: 3px solid var(--jade); }
+.ujian.akan { border-left: 3px solid var(--emas); }
+.ujian.lewat { border-left: 3px solid var(--garis); }
+.ujian .baris { display: flex; gap: 12px; align-items: flex-start; }
+.ujian .isi { flex: 1; min-width: 0; }
+.ujian .j { font-weight: 600; font-size: 15px; letter-spacing: -.005em; }
+.ujian .k { color: var(--tinta-3); font-size: 13px; margin-top: 3px; }
+.ujian .n { font: 600 22px/1 'Space Grotesk', 'Plus Jakarta Sans', sans-serif; font-variant-numeric: tabular-nums; flex: none; }
 .akun { background: var(--papan); border: 1px solid var(--garis); border-radius: var(--r); padding: 16px 18px; }
 .akun p { color: var(--tinta-2); font-size: 14px; margin: 0 0 14px; }
 .kaki { color: var(--tinta-3); font-size: 12.5px; text-align: center; margin-top: 32px; line-height: 1.6; }
@@ -329,7 +359,17 @@ function panggil(action, payload) {
   });
 }
 
-var ST = { nomor: '', data: null, rinci: {}, sibuk: false, tugas: [], buka: '', roster: {} };
+var ST = { nomor: '', data: null, rinci: {}, sibuk: false, tugas: [], buka: '', roster: {}, semuaMateri: false };
+
+/** Tanggal + jam dari cap waktu milidetik (dipakai jadwal ujian CBT). */
+function waktuTeks(ms) {
+  var n = Number(ms);
+  if (!n || !isFinite(n)) return '';
+  var d = new Date(n);
+  if (isNaN(d.getTime())) return '';
+  var j = ('0' + d.getHours()).slice(-2) + '.' + ('0' + d.getMinutes()).slice(-2);
+  return d.getDate() + ' ' + BLN[d.getMonth()] + ' ' + d.getFullYear() + ' pukul ' + j;
+}
 
 function ingat(n) { try { sessionStorage.setItem(SIMPAN, n); } catch (e) { } }
 function diingat() { try { return sessionStorage.getItem(SIMPAN) || ''; } catch (e) { return ''; } }
@@ -408,7 +448,13 @@ function daftarTugas(d) {
         nilai: (t.score === '' || t.score === null || t.score === undefined) ? null : t.score,
         maxScore: t.maxScore, status: t.status || '', tutup: String(t.status || '') === 'Tutup',
         mode: t.mode || '', groupMin: t.groupMin || '', groupMax: t.groupMax || '',
-        petunjuk: t.instruction || '', anggota: t.members || '', kelompokNama: t.groupName || ''
+        petunjuk: t.instruction || '', anggota: t.members || '', kelompokNama: t.groupName || '',
+        /* Dibawa apa adanya dari form tugas gurunya: jenis, tanggal
+           diberikan, dan tautan bahan. Tautan itu menempel pada tugasnya —
+           terlihat di daftar maupun di borang pengumpulan, sebelum dan
+           sesudah dikumpulkan. */
+        jenis: t.type || '', diberikan: t.assignDate || '', link: t.link || '',
+        kirimanLink: t.submissionLink || ''
       });
     });
   });
@@ -418,11 +464,14 @@ function daftarTugas(d) {
     (pk.tugas || []).forEach(function (t) {
       if (ada[(pk.kelas + '|' + String(t.judul || '')).toUpperCase()]) return;
       out.push({
-        id: '', judul: t.judul, mapel: t.mapel || '', kelas: pk.kelas,
+        id: t.id || '', judul: t.judul, mapel: t.mapel || '', kelas: pk.kelas,
         batas: t.batas || '', sudah: !!t.sudah, tanggal: t.tanggal || '',
         nilai: (t.nilai === '' || t.nilai === null || t.nilai === undefined) ? null : t.nilai,
-        maxScore: t.maxScore, status: t.status || '', tutup: false,
-        mode: '', groupMin: '', groupMax: '', petunjuk: '', anggota: '', kelompokNama: ''
+        maxScore: t.maxScore, status: t.status || '', tutup: !!t.tutup,
+        mode: t.mode || '', groupMin: t.groupMin || '', groupMax: t.groupMax || '',
+        petunjuk: t.petunjuk || '', anggota: '', kelompokNama: '',
+        jenis: t.jenis || '', diberikan: t.diberikan || '', link: t.link || '',
+        kirimanLink: ''
       });
     });
   });
@@ -497,6 +546,117 @@ function blokMapel(g) {
   return s + '</div>';
 }
 
+/* ---------------------------------------------------------------
+ * Alamat yang benar-benar bisa dibuka. Kolom "Tautan bahan" di form
+ * tugas bertipe url, tetapi tugas lama bisa berisi keterangan biasa
+ * ("lihat buku paket hal. 42"). Yang bukan alamat ditampilkan sebagai
+ * teks — bukan tombol yang menjanjikan sesuatu lalu gagal dibuka.
+ * ------------------------------------------------------------- */
+function alamat(u) {
+  var s = String(u || '').trim();
+  if (!s) return '';
+  if (/^https?:\/\//i.test(s)) return s;
+  if (s.indexOf(' ') < 0 && /^[\w-]+(\.[\w-]+)+([/?#]|$)/.test(s)) return 'https://' + s;
+  return '';
+}
+
+/* Tautan bahan yang MENEMPEL pada tugasnya: ikut terlihat di daftar
+   tugas, di borang pengumpulan, dan tetap ada sesudah dikumpulkan. */
+function bahanTugas(t, dalamBorang) {
+  var s = String(t.link || '').trim();
+  if (!s) return '';
+  var u = alamat(s);
+  if (!u) {
+    return '<div class="bahan-teks">Bahan dari gurumu: <b>' + esc(s) + '</b></div>';
+  }
+  return '<a class="tombol sunyi bahan" target="_blank" rel="noopener noreferrer" href="'
+    + esc(u) + '">' + (dalamBorang ? 'Buka bahan tugasnya' : 'Buka bahan tugas') + '</a>';
+}
+
+/* ---------------------------------------------------------------
+ * MATERI & CATATAN PEMBELAJARAN — bahan yang ditempel gurunya pada
+ * tiap pertemuan. Form "Materi / presentasi" di sisi guru sudah lama
+ * menjanjikan "siswa melihatnya di riwayat pembelajaran mereka",
+ * padahal halaman ini belum pernah menggambarnya sekali pun.
+ * ------------------------------------------------------------- */
+function blokMateri(d) {
+  var m = d.materi || [];
+  if (!m.length) {
+    return '<div class="mapel"><div class="tanpa" style="margin:0">Belum ada materi '
+      + 'atau bahan belajar yang dibagikan gurumu.</div></div>';
+  }
+  var batas = ST.semuaMateri ? m.length : 6;
+  var s = m.slice(0, batas).map(function (x) {
+    var kepala = [];
+    if (x.mapel) kepala.push(esc(x.mapel));
+    if (x.no) kepala.push('pertemuan ' + esc(String(x.no)));
+    if (x.tp) kepala.push('TP ' + esc(x.tp));
+    var b = '<div class="materi"><div class="atas"><div class="j">'
+      + esc(x.topik || x.materi || ('Pertemuan ' + (x.no || ''))) + '</div>'
+      + (x.tanggal ? '<span class="cap jade">' + tgl(x.tanggal) + '</span>' : '')
+      + '</div>'
+      + (kepala.length ? '<div class="t">' + kepala.join(' &nbsp;·&nbsp; ') + '</div>' : '');
+    var dl = '';
+    if (x.materi && x.materi !== x.topik) dl += '<dt>Materi</dt><dd>' + esc(x.materi) + '</dd>';
+    if (x.media) dl += '<dt>Media</dt><dd>' + esc(x.media) + '</dd>';
+    if (x.penugasan) dl += '<dt>Penugasan</dt><dd>' + esc(x.penugasan) + '</dd>';
+    if (dl) b += '<dl>' + dl + '</dl>';
+    var t = (x.tautan || []).filter(function (l) { return alamat(l.url); });
+    if (t.length) {
+      b += '<div class="bahan-daftar">' + t.map(function (l) {
+        return '<a target="_blank" rel="noopener noreferrer" href="' + esc(alamat(l.url)) + '">'
+          + '<i aria-hidden="true">↗</i>' + esc(l.nama || 'Buka bahan') + '</a>';
+      }).join('') + '</div>';
+    }
+    return b + '</div>';
+  }).join('');
+  if (m.length > batas) {
+    s += '<button class="tombol sunyi" id="btn-materi" style="width:auto">Tampilkan '
+      + (m.length - batas) + ' pertemuan lainnya</button>';
+  }
+  return s;
+}
+
+/* ---------------------------------------------------------------
+ * UJIAN CBT — hanya ada kalau halaman ini dilayani script gabungan
+ * (MPH + CBT). Tokennya TIDAK ditampilkan di sini: itu tetap milik
+ * guru untuk dibagikan saat ujiannya dimulai.
+ * ------------------------------------------------------------- */
+function blokCbt(d) {
+  var c = d.cbt;
+  if (!c || c.ada === false) return '';
+  var daftar = c.ujian || [];
+  var s = daftar.length ? daftar.map(function (x) {
+    var bagian = [];
+    if (x.mapel) bagian.push(esc(x.mapel));
+    if (x.kategori) bagian.push(esc(x.kategori));
+    var w = waktuTeks(x.mulai);
+    if (w) bagian.push(w);
+    if (x.durasi) bagian.push(x.durasi + ' menit');
+    if (x.kkm !== null && x.kkm !== undefined) bagian.push('KKM ' + angka(x.kkm));
+    var cap;
+    if (x.nilai !== null && x.nilai !== undefined) cap = '<span class="n">' + angka(x.nilai) + '</span>';
+    else if (x.sudah) cap = '<span class="cap jade">Sudah dikerjakan</span>';
+    else if (x.fase === 'berlangsung') cap = '<span class="cap jade">Sedang dibuka</span>';
+    else if (x.fase === 'akan') cap = '<span class="cap emas">Belum dibuka</span>';
+    else cap = '<span class="cap merah">Terlewat</span>';
+    return '<div class="ujian ' + esc(x.fase || '') + '"><div class="baris"><div class="isi">'
+      + '<div class="j">' + esc(x.judul || '(tanpa judul)') + '</div>'
+      + '<div class="k">' + bagian.join(' · ') + '</div></div>' + cap + '</div></div>';
+  }).join('')
+    : '<div class="mapel"><div class="tanpa" style="margin:0">Belum ada ujian CBT '
+      + 'yang dijadwalkan untuk kelasmu.</div></div>';
+  var u = alamat(c.portal);
+  if (u) {
+    s += '<div class="akun" style="margin-top:9px">'
+      + '<p>Masuk ke portal ujian dengan NISN-mu dan token yang diberikan gurumu saat '
+      + 'ujian dimulai. Token tidak ditampilkan di halaman ini.</p>'
+      + '<a class="tombol" target="_blank" rel="noopener noreferrer" href="' + esc(u) + '">'
+      + 'Buka portal ujian CBT</a></div>';
+  }
+  return s;
+}
+
 function barisTugas(t) {
   var lewat = !t.sudah && t.batas && String(t.batas) < hariIni();
   var kelas = t.sudah ? 'sudah' : (lewat ? 'lewat' : 'belum');
@@ -506,16 +666,29 @@ function barisTugas(t) {
       : '<span class="n">' + angka(t.nilai) + '</span>')
     : (lewat ? '<span class="cap merah">Lewat batas</span>'
       : '<span class="cap emas">Belum</span>');
-  var ket = esc(t.mapel || '');
-  if (t.batas) ket += (ket ? ' · ' : '') + 'batas ' + tgl(t.batas);
-  if (t.sudah && t.tanggal) ket += ' · dikumpulkan ' + tgl(t.tanggal);
-  if (t.mode === 'kelompok') ket += ' · tugas kelompok';
+  /* Keterangannya mengikuti format penugasan gurunya: jenis, mata
+     pelajaran, rentang tanggal, nilai maksimum, dan cara pengerjaan. */
+  var bagian = [];
+  if (t.jenis) bagian.push(esc(t.jenis));
+  if (t.mapel) bagian.push(esc(t.mapel));
+  if (t.diberikan && t.batas) bagian.push(tgl(t.diberikan) + ' → ' + tgl(t.batas));
+  else if (t.batas) bagian.push('batas ' + tgl(t.batas));
+  if (t.maxScore) bagian.push('nilai maks ' + angka(t.maxScore));
+  if (t.mode === 'kelompok') bagian.push('tugas kelompok');
+  if (t.sudah && t.tanggal) bagian.push('dikumpulkan ' + tgl(t.tanggal));
+  var kiriman = '';
+  if (t.sudah && alamat(t.kirimanLink)) {
+    kiriman = '<a class="tombol sunyi kiriman" target="_blank" rel="noopener noreferrer" href="'
+      + esc(alamat(t.kirimanLink)) + '">Lihat yang kamu kirim</a>';
+  }
   /* Borangnya diletakkan DI BAWAH baris, bukan di dalam kolom kirinya:
      di dalam flex, lebarnya tinggal separuh dan kotak tautan terpotong. */
   return '<div class="tugas ' + kelas + '" data-id="' + esc(t.id || '') + '">'
     + '<div class="baris"><div class="isi">'
     + '<div class="j">' + esc(t.judul || '(tanpa judul)') + '</div>'
-    + '<div class="k">' + ket + '</div></div>' + cap + '</div>'
+    + '<div class="k">' + bagian.join(' · ') + '</div></div>' + cap + '</div>'
+    + (bahanTugas(t) || kiriman
+      ? '<div class="tombol-baris">' + bahanTugas(t) + kiriman + '</div>' : '')
     + tombolKumpul(t) + '</div>';
 }
 
@@ -539,6 +712,10 @@ function borang(t) {
   var daftar = ST.roster[t.kelas];
   var s = '<div class="borang" data-borang="' + esc(t.id) + '">';
   if (t.petunjuk) s += '<div class="petunjuk">' + esc(t.petunjuk) + '</div>';
+  /* Bahannya diulang di sini supaya tidak perlu menutup borang hanya untuk
+     membuka tautannya lagi saat sedang mengerjakan. */
+  var bahan = bahanTugas(t, true);
+  if (bahan) s += '<div class="tombol-baris" style="margin-bottom:13px">' + bahan + '</div>';
   s += '<label for="tautan-' + esc(t.id) + '">Tautan hasil kerjamu</label>'
     + '<input type="text" id="tautan-' + esc(t.id) + '" inputmode="url" '
     + 'placeholder="https://… (Canva, Drive, Docs)" autocomplete="off">'
@@ -936,7 +1113,14 @@ function layarIsi() {
     s += '<div class="mapel"><div class="tanpa" style="margin:0">Belum ada pertemuan yang diabsen.</div></div>';
   }
 
-  /* 4. pengumuman */
+  /* 4. ujian CBT — hanya tampil pada script gabungan MPH + CBT */
+  var cbt = blokCbt(d);
+  if (cbt) s += '<h2 class="bagian">Ujian CBT</h2>' + cbt;
+
+  /* 5. materi & bahan belajar dari gurunya */
+  s += '<h2 class="bagian">Materi &amp; catatan pembelajaran</h2>' + blokMateri(d);
+
+  /* 6. pengumuman */
   var um = d.pengumuman || [];
   if (um.length) {
     s += '<h2 class="bagian">Pengumuman & jadwal ujian</h2>' + um.map(function (x) {
