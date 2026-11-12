@@ -1,4 +1,12 @@
 <!DOCTYPE html>
+<!--
+  DIBANGUN OTOMATIS. Berkas yang disebar — mph/siswa/index.html dan
+  SiswaBeranda.html di proyek gabungan — DIBUAT dari berkas ini oleh
+  mph/build.sh, jadi setiap perubahan di sana akan tertimpa pada build
+  berikutnya tanpa pesan apa pun. Sumbernya: mph/src/beranda.html.
+  (Bandingkan mph/klien/index.html, yang justru BUKAN hasil build dan
+  memang diubah langsung — dua berkas serupa, dua aturan berbeda.)
+-->
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -574,7 +582,7 @@ function bahanTugas(t, dalamBorang) {
 }
 
 /* ---------------------------------------------------------------
- * MATERI & CATATAN PEMBELAJARAN — bahan yang ditempel gurunya pada
+ * MATERI & CATATAN PEMBELAJARAN — bahan yang ditempel gurunya di
  * tiap pertemuan. Form "Materi / presentasi" di sisi guru sudah lama
  * menjanjikan "siswa melihatnya di riwayat pembelajaran mereka",
  * padahal halaman ini belum pernah menggambarnya sekali pun.
@@ -1137,13 +1145,13 @@ function layarIsi() {
     }).join('');
   }
 
-  /* 5. tugas yang sudah dikumpulkan */
+  /* 7. tugas yang sudah dikumpulkan */
   if (sudah.length) {
     s += '<h2 class="bagian">Sudah kamu kumpulkan (' + sudah.length + ')</h2>'
       + sudah.map(barisTugas).join('');
   }
 
-  /* 6. email, supaya pemberitahuan sampai ke HP sendiri */
+  /* 8. email, supaya pemberitahuan sampai ke HP sendiri */
   s += '<h2 class="bagian">Google Calendar</h2>' + kartuKalender(d);
 
   s += '<h2 class="bagian">Emailku</h2><div class="akun">'
@@ -1161,6 +1169,8 @@ function layarIsi() {
     lupakan(); ST.data = null; ST.rinci = {}; ST.tugas = []; ST.buka = ''; layarMasuk('');
   });
   el('btn-email').addEventListener('click', simpanEmail);
+  var bm = el('btn-materi');
+  if (bm) bm.addEventListener('click', function () { ST.semuaMateri = true; layarIsi(); });
 
   /* Tombol pengumpulan dipasang sekali di sini, sesudah seluruh layar
      digambar ulang — bukan satu per satu saat merangkai HTML-nya. */
