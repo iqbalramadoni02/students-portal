@@ -289,6 +289,174 @@ table.absen td:last-child { text-align: right; font-weight: 600; }
   .kepala h1 { font-size: 22px; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* ==================================================================
+   SIDEBAR BERTAB — menggantikan satu gulungan panjang
+
+   Dulu seluruh isi beranda ditumpuk dalam satu halaman: nilai, tugas,
+   absensi, materi, pengumuman, dan pengaturan email. Di HP itu berarti
+   menggulir belasan layar hanya untuk sampai ke materi. Sekarang tiap
+   bagian punya tabnya sendiri.
+
+   Di layar lebar sidebar menempel di kiri. Di HP ia menjadi laci yang
+   menutup sendiri sesudah satu tab dipilih — bukan sekadar menyempit,
+   sebab sidebar setinggi layar di HP memakan ruang yang justru
+   dibutuhkan isinya.
+   ================================================================== */
+
+.bungkus.ber-tab { max-width: 1080px; }
+
+.tata { display: flex; gap: 26px; align-items: flex-start; }
+
+/* ---- sidebar ---- */
+.sisi {
+  flex: 0 0 232px; position: sticky; top: 18px;
+  background: var(--papan); border: 1px solid var(--garis-tipis);
+  border-radius: var(--r); padding: 10px; display: flex; flex-direction: column; gap: 3px;
+}
+.sisi.tutup { flex-basis: 62px; }
+.sisi .siswa {
+  padding: 11px 12px 13px; border-bottom: 1px solid var(--garis-tipis); margin-bottom: 7px;
+}
+.sisi .siswa b { display: block; font: 700 15px/1.3 'Plus Jakarta Sans', sans-serif; color: var(--tinta); }
+.sisi .siswa span { display: block; margin-top: 3px; font: 500 12px/1.4 'Plus Jakarta Sans', sans-serif; color: var(--tinta-3); }
+.sisi.tutup .siswa { display: none; }
+
+.tab-tombol {
+  display: flex; align-items: center; gap: 11px; width: 100%;
+  font: 600 14px/1 'Plus Jakarta Sans', sans-serif; color: var(--tinta-2);
+  padding: 12px 13px; border: 0; border-radius: var(--r-kecil);
+  background: transparent; cursor: pointer; text-align: left;
+}
+.tab-tombol:hover { background: var(--jade-muda); }
+.tab-tombol.on { background: var(--jade-tua); color: var(--tombol-teks); }
+.tab-tombol .lam { flex: 0 0 20px; font-size: 16px; line-height: 1; text-align: center; }
+.tab-tombol .jml {
+  margin-left: auto; font: 700 11px/1 'Plus Jakarta Sans', sans-serif;
+  background: var(--emas-muda); color: var(--emas); padding: 4px 7px; border-radius: var(--r-pil);
+}
+.tab-tombol.on .jml { background: rgba(255,255,255,.22); color: #fff; }
+.sisi.tutup .tab-tombol { justify-content: center; padding: 12px 0; }
+.sisi.tutup .tab-tombol .teks, .sisi.tutup .tab-tombol .jml { display: none; }
+
+.sisi-kaki { margin-top: 7px; padding-top: 7px; border-top: 1px solid var(--garis-tipis); }
+
+.btn-laci {
+  display: none; align-items: center; gap: 9px;
+  font: 600 14px/1 'Plus Jakarta Sans', sans-serif; color: var(--tinta-2);
+  padding: 11px 15px; border: 1.5px solid var(--garis); border-radius: var(--r-pil);
+  background: var(--papan); cursor: pointer; margin-bottom: 15px;
+}
+.btn-lipat {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; padding: 9px 0; border: 0; border-radius: var(--r-kecil);
+  background: transparent; color: var(--tinta-3); cursor: pointer;
+  font: 600 12px/1 'Plus Jakarta Sans', sans-serif;
+}
+.btn-lipat:hover { background: var(--jade-muda); color: var(--tinta-2); }
+
+.isi-tab { flex: 1 1 auto; min-width: 0; }
+/* Judul pertama di sebuah tab tidak perlu jarak atas — tabnya sendiri
+   sudah menjadi pemisahnya. */
+.isi-tab > .bagian:first-child { margin-top: 0; }
+
+/* ---- absen mandiri ---- */
+.absen-kartu {
+  background: var(--papan); border: 1px solid var(--garis-tipis);
+  border-radius: var(--r); padding: 19px; margin-bottom: 15px;
+}
+.absen-kartu h3 { font: 700 16px/1.3 'Plus Jakarta Sans', sans-serif; color: var(--tinta); margin: 0 0 5px; }
+.absen-kartu p { font: 500 13.5px/1.55 'Plus Jakarta Sans', sans-serif; color: var(--tinta-3); margin: 0 0 15px; }
+.absen-kartu .tombol { width: 100%; }
+.absen-sudah {
+  display: flex; align-items: center; gap: 10px; padding: 14px 16px;
+  background: var(--jade-muda); border-radius: var(--r-kecil);
+  font: 600 14px/1.4 'Plus Jakarta Sans', sans-serif; color: var(--jade-tua);
+}
+.absen-sudah .tnd { font-size: 19px; line-height: 1; }
+
+@media (max-width: 860px) {
+  .bungkus.ber-tab { max-width: 560px; }
+  .tata { display: block; }
+  .btn-laci { display: inline-flex; }
+  .sisi {
+    position: fixed; z-index: 60; inset: 0 auto 0 0; width: 268px;
+    border-radius: 0 var(--r) var(--r) 0; overflow-y: auto;
+    transform: translateX(-100%); transition: transform .22s ease;
+    box-shadow: 0 0 0 100vmax rgba(0,0,0,0);
+  }
+  .sisi.buka { transform: translateX(0); box-shadow: 0 10px 40px rgba(0,0,0,.26); }
+  .sisi.tutup { flex-basis: auto; width: 268px; }
+  .sisi.tutup .siswa { display: block; }
+  .sisi.tutup .tab-tombol { justify-content: flex-start; padding: 12px 13px; }
+  .sisi.tutup .tab-tombol .teks, .sisi.tutup .tab-tombol .jml { display: inline; }
+  .btn-lipat { display: none; }
+  .tirai {
+    position: fixed; inset: 0; z-index: 59; background: rgba(10,20,14,.44);
+    opacity: 0; pointer-events: none; transition: opacity .22s ease;
+  }
+  .tirai.on { opacity: 1; pointer-events: auto; }
+}
+
+@media (prefers-color-scheme: dark) {
+  .tab-tombol:hover { background: rgba(255,255,255,.07); }
+}
+
+
+/* ==================================================================
+   MATERI AJAR YANG DIUNGGAH GURU
+
+   Dibedakan dari catatan pertemuan: catatan itu ringkasan satu-dua baris,
+   sedangkan ini bahan belajar utuh yang memang untuk dibaca. Karena itu
+   ia punya kartu sendiri yang bisa dibuka-tutup — kalau semuanya terbuka
+   sekaligus, satu tab berisi lima materi akan sepanjang halaman lama yang
+   justru sedang kita hilangkan.
+   ================================================================== */
+.ma-kartu {
+  background: var(--papan); border: 1px solid var(--garis-tipis);
+  border-radius: var(--r); margin-bottom: 13px; overflow: hidden;
+}
+.ma-kepala {
+  display: flex; align-items: flex-start; gap: 12px; width: 100%;
+  padding: 17px 19px; border: 0; background: transparent; cursor: pointer; text-align: left;
+  border-left: 4px solid var(--ma-aksen, var(--jade));
+}
+.ma-kepala:hover { background: var(--jade-muda); }
+.ma-kepala .ma-t { flex: 1 1 auto; min-width: 0; }
+.ma-kepala b { display: block; font: 700 15.5px/1.35 'Plus Jakarta Sans', sans-serif; color: var(--tinta); }
+.ma-kepala small { display: block; margin-top: 4px; font: 500 12.5px/1.45 'Plus Jakarta Sans', sans-serif; color: var(--tinta-3); }
+.ma-kepala .ma-panah { flex: 0 0 auto; color: var(--tinta-3); font-size: 15px; transition: transform .18s ease; }
+.ma-kartu.buka .ma-panah { transform: rotate(90deg); }
+.ma-badan { padding: 3px 19px 19px; display: none; }
+.ma-kartu.buka .ma-badan { display: block; }
+
+.ma-jade { --ma-aksen: #1D6B4C; }
+.ma-laut { --ma-aksen: #1E5A8A; }
+.ma-senja { --ma-aksen: #9A4A1B; }
+.ma-kertas { --ma-aksen: #4A4A52; }
+
+.ma-badan .mt-h1 { font: 800 18px/1.35 'Plus Jakarta Sans', sans-serif; color: var(--ma-aksen); margin: 17px 0 7px; }
+.ma-badan .mt-h2 { font: 700 15.5px/1.35 'Plus Jakarta Sans', sans-serif; color: var(--tinta); margin: 15px 0 6px; }
+.ma-badan .mt-h3 { font: 700 13.5px/1.4 'Plus Jakarta Sans', sans-serif; color: var(--tinta-2); margin: 12px 0 5px; }
+.ma-badan .mt-p { font: 400 14.5px/1.68 'Plus Jakarta Sans', sans-serif; color: var(--tinta-2); margin: 0 0 10px; }
+.ma-badan .mt-list { margin: 0 0 12px; padding-left: 21px; }
+.ma-badan .mt-list li { font: 400 14.5px/1.62 'Plus Jakarta Sans', sans-serif; color: var(--tinta-2); margin-bottom: 5px; }
+.ma-badan .mt-q {
+  margin: 0 0 12px; padding: 11px 15px; border-left: 3px solid var(--ma-aksen);
+  background: var(--kertas); border-radius: 0 var(--r-kecil) var(--r-kecil) 0;
+  font: italic 400 14.5px/1.6 'Plus Jakarta Sans', sans-serif; color: var(--tinta-2);
+}
+.ma-badan .mt-kode {
+  margin: 0 0 12px; padding: 12px 14px; background: var(--kertas);
+  border-radius: var(--r-kecil); font: 400 13px/1.55 ui-monospace, monospace;
+  color: var(--tinta); white-space: pre-wrap; overflow-x: auto;
+}
+.ma-badan .mt-pisah { border: 0; border-top: 1px solid var(--garis-tipis); margin: 18px 0; }
+.mt-tabel-bungkus { overflow-x: auto; margin: 0 0 13px; -webkit-overflow-scrolling: touch; }
+.ma-badan .mt-tabel { border-collapse: collapse; width: 100%; font: 400 13.5px/1.5 'Plus Jakarta Sans', sans-serif; }
+.ma-badan .mt-tabel th, .ma-badan .mt-tabel td { border: 1px solid var(--garis-tipis); padding: 7px 10px; text-align: left; }
+.ma-badan .mt-tabel th { background: var(--kertas); font-weight: 700; color: var(--tinta); }
+
 </style>
 </head>
 <body>
@@ -367,7 +535,15 @@ function panggil(action, payload) {
   });
 }
 
-var ST = { nomor: '', data: null, rinci: {}, sibuk: false, tugas: [], buka: '', roster: {}, semuaMateri: false };
+var ST = { nomor: '', data: null, rinci: {}, sibuk: false, tugas: [], buka: '', roster: {},
+  semuaMateri: false,
+  /* tab yang sedang dibuka; sidebar terlipat di layar lebar; laci terbuka di HP */
+  tab: 'beranda', sisiTutup: false, laciBuka: false,
+  /* keadaan absen hari ini, dibaca dari server sekali per sesi */
+  absen: null, absenMinta: false,
+  /* materi mana yang sedang dibuka; tersimpan supaya tidak menutup
+     sendiri setiap kali layarnya digambar ulang */
+  materiBuka: {} };
 
 /** Tanggal + jam dari cap waktu milidetik (dipakai jadwal ujian CBT). */
 function waktuTeks(ms) {
@@ -1061,47 +1237,171 @@ function kartuBukti(j, t) {
     + 'Guru melihat catatan yang sama di aplikasinya.</p></div>';
 }
 
-function layarIsi() {
-  var d = ST.data;
-  if (!d) { layarMasuk(''); return; }
-  var g = perMapel(d);
-  var semuaTugas = ST.tugas || [];
-  var belum = semuaTugas.filter(function (t) { return !t.sudah; });
-  var sudah = semuaTugas.filter(function (t) { return t.sudah; });
+/* ==================================================================
+ *  LAYAR BERTAB
+ *
+ *  layarIsi() dulu merangkai delapan bagian berturut-turut menjadi satu
+ *  halaman panjang. Sekarang ia hanya menggambar rangkanya — sidebar,
+ *  lalu isi tab yang sedang dipilih — dan tiap bagian pindah ke
+ *  fungsinya sendiri di bawah.
+ *
+ *  Yang tidak berubah: seluruh fungsi perangkai isi (blokMapel,
+ *  barisTugas, blokMateri, blokCbt, kartuRadar, lencana, kartuKalender)
+ *  dipakai apa adanya. Tab hanya mengatur mana yang tampil, bukan
+ *  menulis ulang isinya — menulis ulang berarti dua versi dari satu
+ *  tampilan, dan yang satu pasti ketinggalan.
+ * ================================================================== */
+
+/** Urutan tab. Lambangnya memakai emoji, bukan berkas ikon: portal ini
+ *  satu berkas HTML tanpa aset pendamping, dan satu permintaan gambar
+ *  yang gagal akan menyisakan kotak kosong di menu. */
+
+/* ------------------------------------------------------------------
+ * MATERI AJAR YANG DIUNGGAH GURU
+ *
+ * Perangkai bloknya sengaja dibuat sama persis dengan yang ada di
+ * aplikasi guru (MateriAjar.blokHtml), supaya pratinjau yang dilihat
+ * Ustadz sebelum menerbitkan memang sama dengan yang dibaca siswa.
+ * Kalau keduanya ditulis terpisah, yang satu pasti ketinggalan.
+ * ---------------------------------------------------------------- */
+function maBlok(b) {
+  if (!b || !b.t) return '';
+  switch (b.t) {
+    case 'h1': return '<h2 class="mt-h1">' + esc(b.isi) + '</h2>';
+    case 'h2': return '<h3 class="mt-h2">' + esc(b.isi) + '</h3>';
+    case 'h3': return '<h4 class="mt-h3">' + esc(b.isi) + '</h4>';
+    case 'quote': return '<blockquote class="mt-q">' + esc(b.isi) + '</blockquote>';
+    case 'kode': return '<pre class="mt-kode">' + esc(b.isi) + '</pre>';
+    case 'pisah': return '<hr class="mt-pisah">';
+    case 'ul':
+    case 'ol': {
+      var tag = b.t === 'ol' ? 'ol' : 'ul';
+      return '<' + tag + ' class="mt-list">'
+        + (b.isi || []).map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('')
+        + '</' + tag + '>';
+    }
+    case 'tabel': {
+      var r = b.baris || [];
+      if (!r.length) return '';
+      var kep = b.kepala
+        ? '<thead><tr>' + r[0].map(function (c) { return '<th>' + esc(c) + '</th>'; }).join('') + '</tr></thead>'
+        : '';
+      var sisa = b.kepala ? r.slice(1) : r;
+      return '<div class="mt-tabel-bungkus"><table class="mt-tabel">' + kep + '<tbody>'
+        + sisa.map(function (row) {
+          return '<tr>' + row.map(function (c) { return '<td>' + esc(c) + '</td>'; }).join('') + '</tr>';
+        }).join('') + '</tbody></table></div>';
+    }
+    default: return '<p class="mt-p">' + esc(b.isi) + '</p>';
+  }
+}
+
+function blokMateriAjar(d) {
+  var daftar = (d && d.materiAjar) || [];
+  if (!daftar.length) return '';
+  return daftar.map(function (m) {
+    var buka = ST.materiBuka[m.id] ? ' buka' : '';
+    var tema = ['jade', 'laut', 'senja', 'kertas'].indexOf(m.tema) >= 0 ? m.tema : 'jade';
+    return '<div class="ma-kartu ma-' + tema + buka + '">'
+      + '<button class="ma-kepala" data-materi="' + esc(m.id) + '">'
+      + '<span class="ma-t"><b>' + esc(m.judul) + '</b><small>'
+      + (m.ringkas ? esc(m.ringkas) + ' \u00B7 ' : '')
+      + esc(m.mapel || '') + (m.tanggal ? ' \u00B7 ' + tgl(m.tanggal) : '')
+      + '</small></span><span class="ma-panah">\u203A</span></button>'
+      + '<div class="ma-badan">' + (m.blok || []).map(maBlok).join('') + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+function daftarTab() {
+  var d = ST.data || {};
+  var belum = (ST.tugas || []).filter(function (t) { return !t.sudah; }).length;
+  var cbt = ST.data ? blokCbt(ST.data) : '';
+  var materiAda = ((d.materi || []).length > 0) || ((d.materiAjar || []).length > 0);
+  return [
+    { k: 'beranda', l: 'Beranda', i: '\u{1F3E0}' },
+    { k: 'absen', l: 'Absen', i: '\u{1F4CD}' },
+    { k: 'nilai', l: 'Nilai Rapor', i: '\u{1F4CA}' },
+    { k: 'tugas', l: 'Tugas', i: '\u{1F4DD}', n: belum || 0 },
+    { k: 'latihan', l: 'Latihan', i: '\u{1F9E0}', ada: !!cbt },
+    { k: 'materi', l: 'Materi Pembelajaran', i: '\u{1F4D8}', ada: materiAda },
+    { k: 'pengaturan', l: 'Pengaturan', i: '⚙️' }
+  ].filter(function (t) { return t.ada !== false; });
+}
+
+function tabAktif() {
+  var ada = daftarTab().map(function (t) { return t.k; });
+  if (ada.indexOf(ST.tab) < 0) ST.tab = 'beranda';
+  return ST.tab;
+}
+
+function sidebarHtml(d) {
+  var kini = tabAktif();
+  var kelas = (d.kelas || []).join(' · ');
+  return '<nav class="sisi' + (ST.sisiTutup ? ' tutup' : '') + (ST.laciBuka ? ' buka' : '') + '" id="sisi">'
+    + '<div class="siswa"><b>' + esc(d.nama || '') + '</b><span>' + esc(kelas)
+    + (d.nis ? ' · NIS ' + esc(d.nis) : '') + '</span></div>'
+    + daftarTab().map(function (t) {
+      return '<button class="tab-tombol' + (t.k === kini ? ' on' : '') + '" data-tab="' + t.k + '">'
+        + '<span class="lam">' + t.i + '</span><span class="teks">' + esc(t.l) + '</span>'
+        + (t.n ? '<span class="jml">' + t.n + '</span>' : '') + '</button>';
+    }).join('')
+    + '<div class="sisi-kaki">'
+    + '<button class="btn-lipat" id="btn-lipat">' + (ST.sisiTutup ? '»' : '« Sembunyikan') + '</button>'
+    + '<button class="tab-tombol" id="btn-keluar"><span class="lam">↩</span><span class="teks">Keluar</span></button>'
+    + '</div></nav>';
+}
+
+/* ----------------------------- TAB ------------------------------- */
+
+function tabBeranda(d) {
+  var semua = ST.tugas || [];
+  var belum = semua.filter(function (t) { return !t.sudah; });
   belum.sort(function (a, b) { return String(a.batas || '9999').localeCompare(String(b.batas || '9999')); });
-  sudah.sort(function (a, b) { return String(b.tanggal || '').localeCompare(String(a.tanggal || '')); });
-  var rk = d.ringkas || {};
-
-  var s = '<div class="kepala"><h1>' + esc(d.nama || '') + '</h1>'
-    + '<button class="tombol sunyi" id="btn-keluar">Keluar</button></div>'
-    + '<p class="identitas">' + esc((d.kelas || []).join(' · '))
-    + (d.nis ? ' &nbsp;·&nbsp; NIS <b>' + esc(d.nis) + '</b>' : '')
-    + (d.nisn ? ' &nbsp;·&nbsp; NISN <b>' + esc(d.nisn) + '</b>' : '')
-    + '</p><div id="kabar"></div>';
-
-  s += lencana(d, semuaTugas);
-
-  /* 1. radar kemampuan lalu nilai per jenis kelas — yang paling dicari */
+  var s = lencana(d, semua);
   s += kartuRadar(d);
-  s += '<h2 class="bagian">Nilaiku per mata pelajaran</h2>';
-  s += g.length ? g.map(blokMapel).join('')
-    : '<div class="mapel"><div class="tanpa" style="margin:0">Belum ada nilai maupun tugas yang tercatat untukmu.</div></div>';
 
-  /* 2. yang belum dikumpulkan — paling mendesak */
+  /* Yang paling mendesak naik ke atas: tiga tugas terdekat batasnya.
+     Selebihnya ada di tab Tugas — beranda bukan tempat daftar panjang. */
   if (belum.length) {
-    s += '<h2 class="bagian">Belum kamu kumpulkan (' + belum.length + ')</h2>'
-      + belum.map(barisTugas).join('');
-  } else if (semuaTugas.length) {
-    s += '<h2 class="bagian">Belum kamu kumpulkan</h2>'
-      + '<div class="mapel"><div class="tanpa" style="margin:0">Tidak ada. Semua tugasmu sudah terkumpul.</div></div>';
+    s += '<h2 class="bagian">Paling dekat batasnya</h2>'
+      + belum.slice(0, 3).map(barisTugas).join('')
+      + (belum.length > 3
+        ? '<p class="kaki" style="text-align:left;margin-top:9px">Masih ada '
+          + (belum.length - 3) + ' lagi di tab Tugas.</p>' : '');
+  } else if (semua.length) {
+    s += '<h2 class="bagian">Tugas</h2>'
+      + '<div class="mapel"><div class="tanpa" style="margin:0">Semua tugasmu sudah terkumpul.</div></div>';
   }
 
-  /* 3. absensi */
-  s += '<h2 class="bagian">Absensiku</h2><div class="absen-ring">'
+  var um = d.pengumuman || [];
+  if (um.length) s += '<h2 class="bagian">Pengumuman &amp; jadwal ujian</h2>' + um.map(kartuPengumuman).join('');
+  return s;
+}
+
+function kartuPengumuman(x) {
+  return '<div class="umum"><div class="atas"><div class="j">' + esc(x.judul || '') + '</div>'
+    + '<span class="cap jade">' + esc(x.jenis || '') + '</span></div>'
+    + '<div class="t">' + tgl(x.tanggal) + (x.jam ? ' · ' + esc(x.jam) : '')
+    + ' &nbsp;·&nbsp; ' + esc(x.mapel || x.kelas || '') + '</div>'
+    + (x.isi ? '<div class="i">' + esc(x.isi) + '</div>' : '')
+    + (x.tanggal
+      ? '<a class="tombol sunyi" style="margin-top:11px" target="_blank" rel="noopener" '
+        + 'href="' + esc(tautanSatuAcara(x)) + '">Tambah ke Calendar</a>'
+      : '')
+    + '</div>';
+}
+
+function tabAbsen(d) {
+  var rk = d.ringkas || {};
+  var s = kartuAbsenMandiri(d);
+
+  s += '<h2 class="bagian">Ringkasan kehadiran</h2><div class="absen-ring">'
     + '<div><small>Hadir</small><b>' + (rk.hadir || 0) + ' / ' + (rk.absenTercatat || 0) + '</b></div>'
     + (rk.persenHadir !== null && rk.persenHadir !== undefined
       ? '<div><small>Persen kehadiran</small><b>' + angka(rk.persenHadir) + '%</b></div>' : '')
     + '</div>';
+
   var absen = [];
   (d.kelas || []).forEach(function (k) {
     var r = ST.rinci[k];
@@ -1109,52 +1409,107 @@ function layarIsi() {
   });
   absen.sort(function (x, y) { return String(y.a.date).localeCompare(String(x.a.date)); });
   if (absen.length) {
-    s += '<table class="absen"><tbody>' + absen.slice(0, 30).map(function (x) {
-      return '<tr><td>' + tgl(x.a.date) + '</td><td class="st-' + esc(x.a.status) + '">'
-        + esc(x.a.status || '-') + '</td></tr>';
-    }).join('') + '</tbody></table>';
-    if (absen.length > 30) {
-      s += '<p class="kaki" style="text-align:left;margin-top:8px">Menampilkan 30 terbaru dari '
-        + absen.length + ' pertemuan.</p>';
-    }
+    s += '<h2 class="bagian">Riwayat kehadiran</h2>'
+      + '<table class="absen"><tbody>' + absen.slice(0, 60).map(function (x) {
+        return '<tr><td>' + tgl(x.a.date) + '</td><td class="st-' + esc(x.a.status) + '">'
+          + esc(x.a.status || '-') + '</td></tr>';
+      }).join('') + '</tbody></table>'
+      + (absen.length > 60
+        ? '<p class="kaki" style="text-align:left;margin-top:8px">Menampilkan 60 terbaru dari '
+          + absen.length + ' pertemuan.</p>' : '');
   } else {
-    s += '<div class="mapel"><div class="tanpa" style="margin:0">Belum ada pertemuan yang diabsen.</div></div>';
+    s += '<h2 class="bagian">Riwayat kehadiran</h2>'
+      + '<div class="mapel"><div class="tanpa" style="margin:0">Belum ada pertemuan yang diabsen.</div></div>';
   }
+  return s;
+}
 
-  /* 4. ujian CBT — hanya tampil pada script gabungan MPH + CBT */
-  var cbt = blokCbt(d);
-  if (cbt) s += '<h2 class="bagian">Ujian CBT</h2>' + cbt;
-
-  /* 5. materi & bahan belajar dari gurunya */
-  s += '<h2 class="bagian">Materi &amp; catatan pembelajaran</h2>' + blokMateri(d);
-
-  /* 6. pengumuman */
-  var um = d.pengumuman || [];
-  if (um.length) {
-    s += '<h2 class="bagian">Pengumuman & jadwal ujian</h2>' + um.map(function (x) {
-      return '<div class="umum"><div class="atas"><div class="j">' + esc(x.judul || '') + '</div>'
-        + '<span class="cap jade">' + esc(x.jenis || '') + '</span></div>'
-        + '<div class="t">' + tgl(x.tanggal) + (x.jam ? ' · ' + esc(x.jam) : '')
-        + ' &nbsp;·&nbsp; ' + esc(x.mapel || x.kelas || '') + '</div>'
-        + (x.isi ? '<div class="i">' + esc(x.isi) + '</div>' : '')
-        + (x.tanggal
-          ? '<a class="tombol sunyi" style="margin-top:11px" target="_blank" rel="noopener" '
-            + 'href="' + esc(tautanSatuAcara(x)) + '">Tambah ke Calendar</a>'
-          : '')
-        + '</div>';
-    }).join('');
+/** Kartu absen mandiri. Keadaannya dibaca dari server (ST.absen), bukan
+ *  ditebak dari jam di HP — jam HP bisa digeser, dan tombol yang terlihat
+ *  bisa ditekan padahal pasti ditolak hanya membuat bingung. */
+function kartuAbsenMandiri(d) {
+  var a = ST.absen;
+  if (!a) {
+    return '<div class="absen-kartu"><h3>Absen hari ini</h3>'
+      + '<p>Sedang memeriksa…</p></div>';
   }
+  if (!a.aktif) {
+    return '<div class="absen-kartu"><h3>Absen hari ini</h3>'
+      + '<p>Absen mandiri sedang ditutup. Kehadiranmu dicatat oleh gurumu.</p></div>';
+  }
+  var kelas = (d.kelas || []);
+  return kelas.map(function (k) {
+    var p = (a.perKelas || []).filter(function (x) { return x.kelas === k; })[0] || { sudah: false };
+    var isi;
+    if (p.sudah) {
+      isi = '<div class="absen-sudah"><span class="tnd">✓</span><span>'
+        + (p.olehGuru
+          ? 'Gurumu sudah mencatat kehadiranmu hari ini: <b>' + esc(p.status) + '</b>.'
+          : 'Kamu sudah absen hari ini sebagai <b>' + esc(p.status) + '</b>.')
+        + '</span></div>';
+    } else {
+      isi = '<p>Tekan tombol ini untuk menandai bahwa kamu hadir hari ini. '
+        + 'Sekali saja — dan gurumu tetap bisa membetulkannya.</p>'
+        + '<button class="tombol" data-absen="' + esc(k) + '">Saya hadir hari ini</button>';
+    }
+    return '<div class="absen-kartu"><h3>Absen hari ini'
+      + (kelas.length > 1 ? ' · ' + esc(k) : '') + '</h3>' + isi
+      + '<div class="pesan-absen" data-pesan="' + esc(k) + '"></div></div>';
+  }).join('');
+}
 
-  /* 7. tugas yang sudah dikumpulkan */
+function tabNilai(d) {
+  var g = perMapel(d);
+  var s = kartuRadar(d);
+  s += '<h2 class="bagian">Nilaiku per mata pelajaran</h2>';
+  s += g.length ? g.map(blokMapel).join('')
+    : '<div class="mapel"><div class="tanpa" style="margin:0">Belum ada nilai yang tercatat untukmu.</div></div>';
+  s += kartuBukti(d);
+  return s;
+}
+
+function tabTugas(d) {
+  var semua = ST.tugas || [];
+  var belum = semua.filter(function (t) { return !t.sudah; });
+  var sudah = semua.filter(function (t) { return t.sudah; });
+  belum.sort(function (a, b) { return String(a.batas || '9999').localeCompare(String(b.batas || '9999')); });
+  sudah.sort(function (a, b) { return String(b.tanggal || '').localeCompare(String(a.tanggal || '')); });
+
+  var s = '';
+  if (belum.length) {
+    s += '<h2 class="bagian">Belum kamu kumpulkan (' + belum.length + ')</h2>' + belum.map(barisTugas).join('');
+  } else {
+    s += '<h2 class="bagian">Belum kamu kumpulkan</h2>'
+      + '<div class="mapel"><div class="tanpa" style="margin:0">'
+      + (semua.length ? 'Tidak ada. Semua tugasmu sudah terkumpul.' : 'Belum ada tugas untukmu.')
+      + '</div></div>';
+  }
   if (sudah.length) {
-    s += '<h2 class="bagian">Sudah kamu kumpulkan (' + sudah.length + ')</h2>'
-      + sudah.map(barisTugas).join('');
+    s += '<h2 class="bagian">Sudah kamu kumpulkan (' + sudah.length + ')</h2>' + sudah.map(barisTugas).join('');
   }
+  return s;
+}
 
-  /* 8. email, supaya pemberitahuan sampai ke HP sendiri */
-  s += '<h2 class="bagian">Google Calendar</h2>' + kartuKalender(d);
+function tabLatihan(d) {
+  var cbt = blokCbt(d);
+  return cbt
+    ? '<h2 class="bagian">Ujian &amp; latihan CBT</h2>' + cbt
+    : '<div class="mapel"><div class="tanpa" style="margin:0">Belum ada latihan atau ujian CBT untukmu.</div></div>';
+}
 
-  s += '<h2 class="bagian">Emailku</h2><div class="akun">'
+function tabMateri(d) {
+  var ajar = blokMateriAjar(d);
+  var s = '';
+  /* Bahan ajar yang diunggah guru lebih dulu: itulah yang memang dibuat
+     untuk dibaca. Catatan pertemuan menyusul sebagai riwayat. */
+  if (ajar) s += '<h2 class="bagian">Bahan belajar</h2>' + ajar;
+  s += '<h2 class="bagian">Catatan tiap pertemuan</h2>' + blokMateri(d);
+  return s;
+}
+
+function tabPengaturan(d) {
+  return '<h2 class="bagian">Google Calendar</h2>' + kartuKalender(d)
+    + '<h2 class="bagian">Emailku</h2><div class="akun">'
     + '<p>Sematkan emailmu supaya pemberitahuan tugas, ulangan, dan ujian dari gurumu '
     + 'langsung masuk ke email dan Google Calendar-mu.</p>'
     + '<label for="email">Alamat email</label>'
@@ -1162,24 +1517,102 @@ function layarIsi() {
     + esc(d.email || '') + '">'
     + '<button class="tombol" id="btn-email">Simpan email</button>'
     + '<div id="email-pesan"></div></div>';
+}
+
+/* --------------------------- RANGKA ------------------------------ */
+
+function isiTabSekarang(d) {
+  switch (tabAktif()) {
+    case 'absen': return tabAbsen(d);
+    case 'nilai': return tabNilai(d);
+    case 'tugas': return tabTugas(d);
+    case 'latihan': return tabLatihan(d);
+    case 'materi': return tabMateri(d);
+    case 'pengaturan': return tabPengaturan(d);
+    default: return tabBeranda(d);
+  }
+}
+
+function layarIsi() {
+  var d = ST.data;
+  if (!d) { layarMasuk(''); return; }
+  var bungkus = document.querySelector('.bungkus');
+  if (bungkus) bungkus.classList.add('ber-tab');
+
+  var judul = (daftarTab().filter(function (t) { return t.k === tabAktif(); })[0] || {}).l || '';
+  var s = '<button class="btn-laci" id="btn-laci">☰ ' + esc(judul) + '</button>'
+    + '<div class="tata">' + sidebarHtml(d)
+    + '<div class="isi-tab" id="isi-tab"><div id="kabar"></div>' + isiTabSekarang(d) + '</div>'
+    + '</div><div class="tirai' + (ST.laciBuka ? ' on' : '') + '" id="tirai"></div>';
 
   el('layar').innerHTML = s;
   el('kaki').textContent = 'Halaman ini hanya menampilkan datamu sendiri.';
-  el('btn-keluar').addEventListener('click', function () {
-    lupakan(); ST.data = null; ST.rinci = {}; ST.tugas = []; ST.buka = ''; layarMasuk('');
+  pasangPeristiwa();
+
+  /* Keadaan absen diambil sekali per sesi, lalu tabnya digambar ulang.
+     Diambil di sini dan bukan saat masuk supaya beranda tidak perlu
+     menunggu satu permintaan lagi sebelum tampil. */
+  if (!ST.absen && !ST.absenMinta) {
+    ST.absenMinta = true;
+    panggil('absenMandiriStatus', { nomor: ST.nomor }).then(function (j) {
+      ST.absen = j;
+      if (tabAktif() === 'absen') layarIsi();
+    }, function () { ST.absen = { aktif: false, perKelas: [] }; });
+  }
+}
+
+function pasangPeristiwa() {
+  [].slice.call(document.querySelectorAll('[data-tab]')).forEach(function (b) {
+    b.addEventListener('click', function () {
+      ST.tab = b.getAttribute('data-tab');
+      ST.laciBuka = false;
+      layarIsi();
+      window.scrollTo(0, 0);
+    });
   });
-  el('btn-email').addEventListener('click', simpanEmail);
+  var laci = el('btn-laci');
+  if (laci) laci.addEventListener('click', function () { ST.laciBuka = !ST.laciBuka; layarIsi(); });
+  var tirai = el('tirai');
+  if (tirai) tirai.addEventListener('click', function () { ST.laciBuka = false; layarIsi(); });
+  var lipat = el('btn-lipat');
+  if (lipat) lipat.addEventListener('click', function () { ST.sisiTutup = !ST.sisiTutup; layarIsi(); });
+
+  var keluar = el('btn-keluar');
+  if (keluar) keluar.addEventListener('click', function () {
+    lupakan();
+    ST.data = null; ST.rinci = {}; ST.tugas = []; ST.buka = '';
+    ST.tab = 'beranda'; ST.absen = null; ST.absenMinta = false;
+    var b = document.querySelector('.bungkus');
+    if (b) b.classList.remove('ber-tab');
+    layarMasuk('');
+  });
+
+  var be = el('btn-email');
+  if (be) be.addEventListener('click', simpanEmail);
   var bm = el('btn-materi');
   if (bm) bm.addEventListener('click', function () { ST.semuaMateri = true; layarIsi(); });
 
-  /* Tombol pengumpulan dipasang sekali di sini, sesudah seluruh layar
-     digambar ulang — bukan satu per satu saat merangkai HTML-nya. */
   [].slice.call(document.querySelectorAll('[data-buka]')).forEach(function (b) {
     b.addEventListener('click', function () { bukaBorang(b.getAttribute('data-buka')); });
   });
   [].slice.call(document.querySelectorAll('[data-kirim]')).forEach(function (b) {
     b.addEventListener('click', function () { kirimTugas(b.getAttribute('data-kirim')); });
   });
+  [].slice.call(document.querySelectorAll('[data-absen]')).forEach(function (b) {
+    b.addEventListener('click', function () { absenSekarang(b.getAttribute('data-absen'), b); });
+  });
+  [].slice.call(document.querySelectorAll('[data-materi]')).forEach(function (b) {
+    b.addEventListener('click', function () {
+      var id = b.getAttribute('data-materi');
+      ST.materiBuka[id] = !ST.materiBuka[id];
+      /* Kartunya dibuka langsung di tempat, bukan dengan menggambar ulang
+         seluruh tab: menggambar ulang melompatkan halaman ke atas, dan
+         siswa kehilangan tempatnya di daftar. */
+      var kartu = b.parentNode;
+      if (kartu) kartu.classList.toggle('buka', !!ST.materiBuka[id]);
+    });
+  });
+
   var salin = el('btn-salin');
   if (salin) {
     salin.addEventListener('click', function () {
@@ -1200,6 +1633,30 @@ function layarIsi() {
   if (fokus) fokus.focus();
 }
 
+/** Menandai hadir. Tombolnya dimatikan sejak ditekan, bukan sesudah
+ *  jawabannya datang: tekan dua kali pada sambungan lambat adalah cara
+ *  termudah mengirim dua permintaan sekaligus. */
+function absenSekarang(kelas, tombol) {
+  if (tombol) { tombol.disabled = true; tombol.textContent = 'Mencatat…'; }
+  var kotak = document.querySelector('[data-pesan="' + kelas + '"]');
+  panggil('absenMandiri', { nomor: ST.nomor, className: kelas }).then(function (j) {
+    ST.absen = null; ST.absenMinta = false;
+    if (kotak) kotak.innerHTML = '<div class="kabar-ok" style="margin:11px 0 0">' + esc(j.pesan || 'Tercatat.') + '</div>';
+    panggil('absenMandiriStatus', { nomor: ST.nomor }).then(function (st) {
+      ST.absen = st; ST.absenMinta = true;
+      if (tabAktif() === 'absen') layarIsi();
+    }, function () { ST.absenMinta = true; });
+    /* Riwayat kehadiran ikut disegarkan, supaya baris hari ini benar-benar
+       muncul di tabelnya dan bukan hanya di kartu atas. */
+    (ST.data.kelas || []).forEach(function (k) {
+      panggil('studentRecap', { className: k, studentName: ST.data.nama })
+        .then(function (r) { ST.rinci[k] = r; }, function () { });
+    });
+  }, function (e) {
+    if (tombol) { tombol.disabled = false; tombol.textContent = 'Saya hadir hari ini'; }
+    if (kotak) kotak.innerHTML = '<div class="galat"><b>Belum tercatat</b>' + esc(e.message || String(e)) + '</div>';
+  });
+}
 function simpanEmail() {
   var i = el('email');
   var v = i ? String(i.value || '').trim() : '';
